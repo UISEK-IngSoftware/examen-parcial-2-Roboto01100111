@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}{{ Gore.Nombre }} - Cine Clandestino{% endblock title %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #121212;
+    color: #fff;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  header, .banner {
+    position: relative;
+    z-index: 100;
+    background-color: #121212;
+  }
+
+  .matrix-streams {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .matrix-column {
+    position: absolute;
+    top: -100%;
+    width: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    color: red;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    animation: matrix-fall 15s linear infinite;
+    opacity: 0.12;
+    filter: blur(0.8px);
+  }
+
+  @keyframes matrix-fall {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(200%); }
+  }
+
+  .neon-card {
+    position: relative;
+    background: #1a1a1a;
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 2rem;
+    max-width: 720px;
+    margin: 2rem auto;
+    box-shadow: 0 0 25px #ff0040;
+    z-index: 10;
+  }
+
+  .neon-card::before,
+  .neon-card::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff0040, #ff9900, #ff0040);
+    z-index: -3;
+    border-radius: 20px;
+    filter: blur(20px);
+    animation: pulse 6s infinite linear;
+  }
+
+  .neon-card::after {
+    filter: blur(60px);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+  }
+
+  .neon-card h2 {
+    color: rgb(0, 0, 0);
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .neon-img {
+    display: block;
+    margin: 0 auto 1rem;
+    border-radius: 10px;
+    max-height: 400px;
+    object-fit: cover;
+    width: 100%;
+    box-shadow: 0 0 15px rgba(255, 0, 60, 0.3);
+  }
+
+  .info-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+    color: #000;
+  }
+
+  .info-list li {
+    margin-bottom: 0.5rem;
+    color: #000;
+  }
+
+  .trailer-container {
+    margin-top: 1rem;
+  }
+
+  iframe {
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+    border: none;
+  }
+
+  .btn-back {
+    margin-top: 2rem;
+    background-color: #000;
+    color: white;
+    border: 1px solid #ff0040;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: all 0.8s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-back:hover {
+    background-color: #ff0040;
+    color: black;
+  }
+
+  .sinopsis {
+    font-style: italic;
+    margin-top: 1rem;
+    color: #000;
+  }
+</style>
+
+<div class="matrix-streams"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const container = document.querySelector('.matrix-streams');
+    const katakana = ['ホ', 'ラ', 'ー', 'サ', 'ツ', 'ジ', 'ン', 'チ', 'ジ', 'ゴ', 'ク', 'ユ', 'ウ', 'レ', 'イ', 'サ', 'イ', 'コ', 'オ', 'ニ', 'ジ', 'サ', 'ツ', 'ク', 'チ', 'サ', 'ケ', 'オ', 'ン', 'ナ', 'キ', 'ョ', 'ウ', 'フ', 'ザ', 'ン', 'コ', 'ク', 'ブ', 'キ', 'ミ', 'シ', 'タ', 'イ'];
+
+    for (let i = 0; i < window.innerWidth / 20; i++) {
+      const column = document.createElement('div');
+      column.className = 'matrix-column';
+      let text = '';
+      for (let j = 0; j < 60; j++) {
+        text += katakana[Math.floor(Math.random() * katakana.length)];
+      }
+      column.textContent = text;
+      column.style.left = `${i * 20}px`;
+      column.style.animationDelay = `${Math.random() * 5}s`;
+      container.appendChild(column);
+    }
+  });
+</script>
+
+<div class="neon-card">
+  <h2>{{ Gore.Nombre }}</h2>
+
+  <img src="{{ Gore.Picture.url }}" alt="{{ Gore.Nombre }}" class="neon-img">
+
+  <ul class="info-list">
+    <li><strong>Año:</strong> {{ Gore.Año_de_Publicación }}</li>
+    <li><strong>Director:</strong> {{ Gore.Director }}</li>
+    <li><strong>País:</strong> {{ Gore.País }}</li>
+    <li><strong>Duración:</strong> {{ Gore.Duracion }} min</li>
+    <li><strong>Género:</strong> {{ Gore.Género }}</li>
+    <li><strong>Clasificación:</strong> {{ Gore.Clasificacion }}</li>
+    <li><strong>Tags:</strong> {{ Gore.Tags }}</li>
+    <li><strong>Rating:</strong> {{ Gore.Rating }}/5</li>
+  </ul>
+
+  <p class="sinopsis"><strong>Sinopsis:</strong> {{ Gore.Sinopsis }}</p>
+
+  <div class="trailer-container">
+    <iframe src="https://www.youtube.com/embed/{{ Gore.TrailerURL }}" title="Tráiler de {{ Gore.Nombre }}" allowfullscreen></iframe>
+  </div>
+
+  <div class="text-center">
+    <a href="{% url 'index' %}" class="btn-back">← Volver al catálogo</a>
+  </div>
+</div>
+{% endblock content %}
